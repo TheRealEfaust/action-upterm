@@ -17,8 +17,8 @@ export async function run() {
 
     core.debug('Installing dependencies');
     if (process.platform == 'linux') {
-      await execShellCommand(`curl -sL https://github.com/owenthereal/upterm/releases/latest/download/upterm_linux_amd64.tar.gz | tar zxvf - -C /tmp upterm && sudo install /tmp/upterm /usr/local/bin/`);
-      await execShellCommand('if ! command -v tmux &>/dev/null; then sudo apt-get update && sudo apt-get -y install tmux; fi');
+      await execShellCommand(`curl -sL https://github.com/owenthereal/upterm/releases/latest/download/upterm_linux_amd64.tar.gz | tar zxvf - -C /tmp upterm`);
+      await execShellCommand('if ! command -v tmux &>/dev/null; then yum install -y tmux; fi');
     } else {
       await execShellCommand('brew install owenthereal/upterm/upterm tmux');
     }
@@ -84,7 +84,7 @@ export async function run() {
     const uptermServer = core.getInput('upterm-server');
     const waitTimeoutMinutes = core.getInput('wait-timeout-minutes');
     core.info(`Creating a new session. Connecting to upterm server ${uptermServer}`);
-    await execShellCommand(`tmux new -d -s upterm-wrapper -x 132 -y 43 "upterm host --accept --server '${uptermServer}' ${authorizedKeysParameter} --force-command 'tmux attach -t upterm' -- tmux new -s upterm -x 132 -y 43"`);
+    await execShellCommand(`tmux new -d -s upterm-wrapper -x 132 -y 43 "/tmp/upterm host --accept --server '${uptermServer}' ${authorizedKeysParameter} --force-command 'tmux attach -t upterm' -- tmux new -s upterm -x 132 -y 43"`);
     // resize terminal for largest client by default
     await execShellCommand('tmux set -t upterm-wrapper window-size largest; tmux set -t upterm window-size largest');
     console.debug('Created new session successfully');
@@ -129,7 +129,7 @@ export async function run() {
       }
 
       try {
-        core.info(await execShellCommand('upterm session current --admin-socket ~/.upterm/*.sock'));
+        core.info(await execShellCommand('/tmp/upterm session current --admin-socket ~/.upterm/*.sock'));
       } catch (error) {
         core.error(`error getting upterm session. Error: ${error}`);
         throw error;
