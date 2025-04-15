@@ -57,8 +57,11 @@ export async function run() {
       }
       // @cert-authority entry is the mandatory entry. generate the entry based on the known_hosts entry key
       try {
+        console.debug("Checking known hosts going in");
         await execShellCommand('cat ~/.ssh/known_hosts');
+        console.debug("Ginning up new cert-authority line");
         await execShellCommand('cat <(cat ~/.ssh/known_hosts | awk \'{ print "@cert-authority * " $2 " " $3 }\') >> ~/.ssh/known_hosts');
+        console.debug("And here are the results.");
         await execShellCommand('cat ~/.ssh/known_hosts');
       } catch (error) {
         core.error(`error generating cert-authority entry. Error: ${error}`);
@@ -142,6 +145,7 @@ export async function run() {
     }
   } catch (error) {
     core.info(await execShellCommand('cat /tmp/host.log'));
+    await execShellCommand('jobs -p | xargs -r kill');
     core.setFailed(error.message);
   }
 }
