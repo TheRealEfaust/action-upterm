@@ -84,7 +84,7 @@ export async function run() {
     const uptermServer = core.getInput('upterm-server');
     const waitTimeoutMinutes = core.getInput('wait-timeout-minutes');
     core.info(`Creating a new session. Connecting to upterm server ${uptermServer}`);
-    await execShellCommand(`tmux new -d -s upterm-wrapper -x 132 -y 43 "/tmp/upterm host --accept --server '${uptermServer}' ${authorizedKeysParameter} --force-command 'tmux attach -t upterm' -- tmux new -s upterm -x 132 -y 43"`);
+    await execShellCommand(`tmux new -d -s upterm-wrapper -x 132 -y 43 "(/tmp/upterm host --accept --server '${uptermServer}' ${authorizedKeysParameter} --force-command 'tmux attach -t upterm' -- tmux new -s upterm -x 132 -y 43) |& tee /tmp/host.log"`);
     // resize terminal for largest client by default
     await execShellCommand('tmux set -t upterm-wrapper window-size largest; tmux set -t upterm window-size largest');
     console.debug('Created new session successfully');
@@ -139,6 +139,7 @@ export async function run() {
       await sleep(5000);
     }
   } catch (error) {
+    core.info(await execShellCommand('cat /tmp/host.log'));
     core.setFailed(error.message);
   }
 }
