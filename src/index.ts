@@ -129,6 +129,7 @@ export async function run() {
       }
 
       try {
+        core.info(await execShellCommand('ls ~/.upterm/*.sock'));
         core.info(await execShellCommand('/tmp/upterm session current --admin-socket ~/.upterm/*.sock'));
       } catch (error) {
         core.error(`error getting upterm session. Error: ${error}`);
