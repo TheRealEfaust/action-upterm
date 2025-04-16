@@ -51,7 +51,7 @@ export async function run() {
     } else {
       core.info('Auto-generating ~/.ssh/known_hosts by attempting connection to uptermd.upterm.dev');
       try {
-        if (fs.existsSync('~/.ssh/known_hosts')) {
+        if (fs.existsSync(path.join(sshPath, 'known_hosts'))) {
             console.debug("pre keyscan?!?");
             await execShellCommand('cat ~/.ssh/known_hosts');
         }
@@ -152,7 +152,7 @@ export async function run() {
     }
   } catch (error) {
     core.info(await execShellCommand('cat /tmp/host.log'));
-    await execShellCommand('jobs -p | xargs -r kill -9');
+    await execShellCommand('jobs -p | xargs -r kill -INT');
     core.setFailed(error.message);
   }
 }
