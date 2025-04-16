@@ -40,6 +40,7 @@ export async function run() {
     }
 
     core.debug('Configuring ssh client');
+    await execShellCommand('ls ~/.ssh/');
     fs.appendFileSync(path.join(sshPath, 'config'), 'Host *\nStrictHostKeyChecking no\nCheckHostIP no\n' + 'TCPKeepAlive yes\nServerAliveInterval 30\nServerAliveCountMax 180\nVerifyHostKeyDNS yes\nUpdateHostKeys yes\n');
     // entry in known hosts file in mandatory in upterm. attempt ssh connection to upterm server
     // to get the host key added to ~/.ssh/known_hosts
@@ -54,7 +55,7 @@ export async function run() {
             console.debug("pre keyscan?!?");
             await execShellCommand('cat ~/.ssh/known_hosts');
         }
-        await execShellCommand('ssh-keyscan -v -t ed25519 uptermd.upterm.dev 2> /tmp/keyscan >> ~/.ssh/known_hosts');
+        await execShellCommand('ssh-keyscan -v -H uptermd.upterm.dev 2> /tmp/keyscan >> ~/.ssh/known_hosts');
         console.debug("post keyscan")
         await execShellCommand('cat /tmp/keyscan');
       } catch (error) {
