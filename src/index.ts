@@ -54,7 +54,7 @@ export async function run() {
             console.debug("pre keyscan?!?");
             await execShellCommand('cat ~/.ssh/known_hosts');
         }
-        await execShellCommand('ssh-keyscan uptermd.upterm.dev 2> /dev/null >> ~/.ssh/known_hosts');
+        await execShellCommand('ssh-keyscan -v uptermd.upterm.dev 2> /dev/null >> ~/.ssh/known_hosts');
         console.debug("post keyscan")
         await execShellCommand('cat ~/.ssh/known_hosts');
       } catch (error) {
