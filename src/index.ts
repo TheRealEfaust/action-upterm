@@ -54,9 +54,9 @@ export async function run() {
             console.debug("pre keyscan?!?");
             await execShellCommand('cat ~/.ssh/known_hosts');
         }
-        await execShellCommand('ssh-keyscan -v uptermd.upterm.dev 2> /dev/null >> ~/.ssh/known_hosts');
+        await execShellCommand('ssh-keyscan -v uptermd.upterm.dev 2> /tmp/keyscan >> ~/.ssh/known_hosts');
         console.debug("post keyscan")
-        await execShellCommand('cat ~/.ssh/known_hosts');
+        await execShellCommand('cat /tmp/keyscan');
       } catch (error) {
         core.error(`error running ssh-keyscan. Error: ${error}`);
         throw error;
@@ -151,7 +151,7 @@ export async function run() {
     }
   } catch (error) {
     core.info(await execShellCommand('cat /tmp/host.log'));
-    await execShellCommand('jobs -p | xargs -r kill');
+    await execShellCommand('jobs -p | xargs -r kill -9');
     core.setFailed(error.message);
   }
 }
