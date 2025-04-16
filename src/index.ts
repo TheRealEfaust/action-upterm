@@ -53,6 +53,7 @@ export async function run() {
       try {
         if (fs.existsSync(path.join(sshPath, 'known_hosts'))) {
             console.debug("pre keyscan?!?");
+            await execShellCommand('wc -l ~/.ssh/known_hosts');
             await execShellCommand('cat ~/.ssh/known_hosts');
         }
         await execShellCommand('ssh-keyscan -v -H uptermd.upterm.dev 2> /tmp/keyscan >> ~/.ssh/known_hosts');
